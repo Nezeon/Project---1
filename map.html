@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map Project</title>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: {lat: 0, lng: 0} // Default center
+            });
+
+            // Function to fetch data from PHP script and add markers to the map
+            function fetchDataAndAddMarkers() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'fetch_data.php', true);
+                xhr.onload = function() {
+                    if (xhr.status == 200) {
+                        var data = JSON.parse(xhr.responseText);
+
+                        // Loop through the fetched data and add markers to the map
+                        data.forEach(function(item) {
+                            var marker = new google.maps.Marker({
+                                position: {lat: parseFloat(item.latitude), lng: parseFloat(item.longitude)},
+                                map: map,
+                                title: item.name // You can change this to any other relevant data from your database
+                            });
+                        });
+                    }
+                };
+                xhr.send();
+            }
+
+            // Call the fetchDataAndAddMarkers function when the page loads
+            fetchDataAndAddMarkers();
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaPGsMeJl-XKsUNYG3mI436Vh_WKq3cC8&callback=initMap"></script>
+</body>
+</html>
